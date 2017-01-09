@@ -17,6 +17,8 @@ public:
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	void OpenDoor();
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
@@ -27,5 +29,8 @@ private:
 
 	UPROPERTY(EditAnywhere) // Put data editable into object in unreal
 		ATriggerVolume* PressurePlate;
-	
+
+	UPROPERTY(EditAnywhere) // Put data editable into object in unreal
+		AActor* ActorThatOpens; // remember pawn ( poin en jeu )inherits from   actor
+
 };

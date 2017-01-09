@@ -3,6 +3,16 @@
 #include "BuildingEscape.h"
 #include "OpenDoor.h"
 
+void UOpenDoor::OpenDoor()
+{
+	// Find the Actor
+	AActor* Owner = GetOwner();
+
+	// create Rotatior
+	FRotator NewRotation = FRotator(0.0f, 90.0f, 0.0f);
+	//SSet door rotation
+	Owner->SetActorRotation(NewRotation);
+}
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -19,15 +29,10 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Find the Actor
-	AActor* Owner = GetOwner();
-
-	// create Rotatior
-	FRotator NewRotation = FRotator(0.0f, 60.0f, 0.0f);
-	//SSet door rotation
-	Owner->SetActorRotation(NewRotation);
+	//OpenDoor();
 }
+
+
 
 
 // Called every frame
@@ -35,6 +40,12 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
-	// ...
+	//Poll the Trigger Volume
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	{
+		//if the ActorThatOpens is in the volume
+		OpenDoor();
+	}
 }
+
 

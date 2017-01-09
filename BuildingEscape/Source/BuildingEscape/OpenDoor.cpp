@@ -3,16 +3,7 @@
 #include "BuildingEscape.h"
 #include "OpenDoor.h"
 
-void UOpenDoor::OpenDoor()
-{
-	// Find the Actor
-	AActor* Owner = GetOwner();
 
-	// create Rotatior
-	FRotator NewRotation = FRotator(0.0f, -90.0f, 0.0f);
-	//SSet door rotation
-	Owner->SetActorRotation(NewRotation);
-}
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -29,14 +20,12 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-	//OpenDoor();
 
-	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	Owner = GetOwner();
+	
+		ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 }
-
-
-
 
 // Called every frame
 void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
@@ -48,7 +37,23 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	{
 		//if the ActorThatOpens is in the volume
 		OpenDoor();
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}
+	// Check if Time to close the door
+	if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay)
+	{
+		CloseDoor();
 	}
 }
 
+void UOpenDoor::OpenDoor()
+{	
+	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+}
+
+void UOpenDoor::CloseDoor()
+{
+	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+
+}
 

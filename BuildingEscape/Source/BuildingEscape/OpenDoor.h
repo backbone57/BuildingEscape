@@ -19,18 +19,26 @@ public:
 	virtual void BeginPlay() override;
 
 	void OpenDoor();
+
+	void CloseDoor();
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 
 private:
-	UPROPERTY(VisibleAnywhere) // Put data visible into object in unreal
-		float OpenAngle = 90.0f;
+	UPROPERTY(EditAnywhere) // Put data visible into object in unreal
+		float OpenAngle = -90.0f;
 
 	UPROPERTY(EditAnywhere) // Put data editable into object in unreal
 		ATriggerVolume* PressurePlate;
 
 	UPROPERTY(EditAnywhere) // Put data editable into object in unreal
-		AActor* ActorThatOpens; // remember pawn ( poin en jeu )inherits from   actor
+		float DoorCloseDelay = 2.0f;
+
+	float LastDoorOpenTime;
+
+	AActor* ActorThatOpens; // remember pawn ( poin en jeu )inherits from   actor
+	AActor* Owner; // The Owning door
+
 
 };

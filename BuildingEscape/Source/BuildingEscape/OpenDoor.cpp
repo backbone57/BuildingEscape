@@ -3,7 +3,7 @@
 #include "BuildingEscape.h"
 #include "OpenDoor.h"
 
-
+# define OUT
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -32,8 +32,10 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
+	
+
 	//Poll the Trigger Volume
-	if (PressurePlate->IsOverlappingActor(ActorThatOpens))
+	if (GetTotalMassOfActorsOnPlate() > 15.0f)  // TODO make into param
 	{
 		//if the ActorThatOpens is in the volume
 		OpenDoor();
@@ -57,3 +59,21 @@ void UOpenDoor::CloseDoor()
 
 }
 
+float UOpenDoor::GetTotalMassOfActorsOnPlate()
+{
+	float TotalMass = 0.f;
+
+	// Find all the overlapping actors
+	TArray<AActor*> OverlappingActors;
+	if (!PressurePlate) { return TotalMass; }
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+
+	// Iterate through them adding their masses
+	for (const auto& Actor : OverlappingActors)
+	{
+		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		UE_LOG(LogTemp, Warning, TEXT("%s on pressure plate"), *Actor->GetName())
+	}
+
+	return TotalMass;
+}

@@ -38,6 +38,7 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	if (GetTotalMassOfActorsOnPlate() > 15.0f)  // TODO make into param
 	{
 		//if the ActorThatOpens is in the volume
+		//UE_LOG(LogTemp, Warning, TEXT("On Plate"));
 		OpenDoor();
 		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
@@ -50,7 +51,8 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 
 void UOpenDoor::OpenDoor()
 {	
-	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+	//Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+	onOpenRequest.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
@@ -65,14 +67,17 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 
 	// Find all the overlapping actors
 	TArray<AActor*> OverlappingActors;
-	if (!PressurePlate) { return TotalMass; }
+	if (!PressurePlate) { 
+		//UE_LOG(LogTemp, Warning, TEXT("no PressurePlate"));
+		return TotalMass; 
+	}
 	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
 
 	// Iterate through them adding their masses
 	for (const auto& Actor : OverlappingActors)
 	{
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
-		UE_LOG(LogTemp, Warning, TEXT("%s on pressure plate"), *Actor->GetName())
+		//UE_LOG(LogTemp, Warning, TEXT("%s on pressure plate"), *Actor->GetName())
 	}
 
 	return TotalMass;
